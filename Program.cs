@@ -54,13 +54,16 @@ builder.Services.AddDbContext<PruebaContext>(options =>
 
 var app = builder.Build();
 
-// Middleware
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // IMPORTANTE
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// 🔥 IMPORTANTE PARA RENDER
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.Run();
