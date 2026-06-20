@@ -20,6 +20,9 @@ public partial class PruebaContext : DbContext
         modelBuilder.UseCollation("utf8mb4_general_ci")
                     .HasCharSet("utf8mb4");
 
-        // (dejas TODO tu mapping igual)
+        // 🔥 IMPORTANTE
+        base.OnModelCreating(modelBuilder);
+
+        // aquí mantienes tu mapping existente
     }
 }

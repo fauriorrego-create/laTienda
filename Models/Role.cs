@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace laTienda.Models;
 
@@ -9,5 +8,7 @@ public partial class Role
 
     public string Nombrerol { get; set; } = null!;
 
-    public virtual ICollection<Usuariorole> Usuarioroles { get; set; } = new List<Usuariorole>();
+    // 🔥 nullable safe
+    public virtual ICollection<Usuariorole> Usuarioroles { get; set; }
+        = new List<Usuariorole>();
 }

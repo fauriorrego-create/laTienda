@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace laTienda.Models;
+﻿namespace laTienda.Models;
 
 public partial class Usuariorole
 {
@@ -11,7 +8,8 @@ public partial class Usuariorole
 
     public int Idrol { get; set; }
 
-    public virtual Role IdrolNavigation { get; set; } = null!;
+    // 🔥 ESTO ES LO QUE TE ESTABA ROMPIENDO EN RENDER
+    public virtual Role? IdrolNavigation { get; set; }
 
-    public virtual Usuario IdusuarioNavigation { get; set; } = null!;
+    public virtual Usuario? IdusuarioNavigation { get; set; }
 }

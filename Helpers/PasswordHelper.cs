@@ -23,12 +23,20 @@ namespace laTienda.Helpers
             byte[] passwordHash,
             byte[] passwordSalt)
         {
+            if (string.IsNullOrEmpty(password))
+                return false;
+
+            if (passwordHash == null || passwordSalt == null)
+                return false;
+
             using var hmac = new HMACSHA512(passwordSalt);
 
             var hashCalculado = hmac.ComputeHash(
                 Encoding.UTF8.GetBytes(password));
 
-            return hashCalculado.SequenceEqual(passwordHash);
+            return CryptographicOperations.FixedTimeEquals(
+                hashCalculado,
+                passwordHash);
         }
     }
 }
