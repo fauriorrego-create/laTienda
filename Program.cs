@@ -46,9 +46,7 @@ builder.Services.AddDbContext<PruebaContext>(options =>
 {
     options.UseMySql(
         builder.Configuration.GetConnectionString("cadenaSQL"),
-        ServerVersion.AutoDetect(
-            builder.Configuration.GetConnectionString("cadenaSQL")
-        )
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("cadenaSQL"))
     );
 });
 
