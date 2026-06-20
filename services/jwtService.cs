@@ -15,49 +15,46 @@ namespace laTienda.Services
             _configuration = configuration;
         }
 
-        public string GenerarToken(
-            Usuario usuario,
-            List<string> roles)
+        public string GenerarToken(Usuario usuario, List<string> roles)
         {
+            var keyString = _configuration["Jwt:Key"];
+            var issuer = _configuration["Jwt:Issuer"];
+            var audience = _configuration["Jwt:Audience"];
+
+            if (string.IsNullOrEmpty(keyString))
+                throw new Exception("Jwt:Key no configurado");
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier,
-                    usuario.Idusuario.ToString()),
-
-                new Claim(ClaimTypes.Name,
-                    usuario.Nombre),
-
-                new Claim(ClaimTypes.Email,
-                    usuario.Email)
+                new Claim(ClaimTypes.NameIdentifier, usuario.Idusuario.ToString()),
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Email, usuario.Email)
             };
 
             foreach (var rol in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, rol));
+                if (!string.IsNullOrEmpty(rol))
+                    claims.Add(new Claim(ClaimTypes.Role, rol));
             }
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    _configuration["Jwt:Key"]!
-                )
+                Encoding.UTF8.GetBytes(keyString)
             );
 
-            var credentials =
-                new SigningCredentials(
-                    key,
-                    SecurityAlgorithms.HmacSha256
-                );
+            var credentials = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256
+            );
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.Now.AddHours(4),
+                expires: DateTime.UtcNow.AddHours(4),
                 signingCredentials: credentials
             );
 
-            return new JwtSecurityTokenHandler()
-                .WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
