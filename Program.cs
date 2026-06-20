@@ -3,13 +3,17 @@ using laTienda.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// =======================
+// SERVICES
+// =======================
+
 // Controllers
 builder.Services.AddControllers();
 
-// 🔥 Leer connection string desde appsettings o variables de entorno (Render)
+// Connection string
 var connectionString = builder.Configuration.GetConnectionString("cadenaSQL");
 
-// 🧠 DbContext corregido (SIN AutoDetect que rompe en Render)
+// DbContext (sin AutoDetect, seguro para Render)
 builder.Services.AddDbContext<PruebaContext>(options =>
 {
     options.UseMySql(
@@ -20,11 +24,22 @@ builder.Services.AddDbContext<PruebaContext>(options =>
 
 var app = builder.Build();
 
-// ❌ En Render normalmente no es necesario y puede causar problemas
-// app.UseHttpsRedirection();
+// =======================
+// PIPELINE
+// =======================
 
-app.UseAuthorization();
+// Ruta de prueba (para saber si la API está viva)
+app.MapGet("/", () => "API funcionando 🚀");
 
+// Controllers
 app.MapControllers();
 
-app.Run();
+// Auth middleware (si lo usas)
+app.UseAuthorization();
+
+// =======================
+// PORT (OBLIGATORIO EN RENDER)
+// =======================
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+
+app.Run($"http://0.0.0.0:{port}");
