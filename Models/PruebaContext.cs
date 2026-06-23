@@ -20,9 +20,27 @@ public partial class PruebaContext : DbContext
         modelBuilder.UseCollation("utf8mb4_general_ci")
                     .HasCharSet("utf8mb4");
 
-        // 🔥 IMPORTANTE
-        base.OnModelCreating(modelBuilder);
+        // =========================
+        // 🔥 RELACIÓN PRODUCTO - CATEGORIA
+        // =========================
+        modelBuilder.Entity<Producto>()
+            .HasOne(p => p.IdcategoriaNavigation)
+            .WithMany()
+            .HasForeignKey(p => p.Idcategoria);
 
-        // aquí mantienes tu mapping existente
+        // =========================
+        // 🔥 RELACIÓN USUARIO - USUARIOROLES
+        // =========================
+        modelBuilder.Entity<Usuariorole>()
+            .HasOne(ur => ur.IdusuarioNavigation)
+            .WithMany(u => u.Usuarioroles)
+            .HasForeignKey(ur => ur.Idusuario);
+
+        modelBuilder.Entity<Usuariorole>()
+            .HasOne(ur => ur.IdrolNavigation)
+            .WithMany()
+            .HasForeignKey(ur => ur.Idrol);
+
+        base.OnModelCreating(modelBuilder);
     }
 }

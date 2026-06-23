@@ -21,20 +21,30 @@ namespace laTienda.Services
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
 
+            // 🔴 VALIDACIÓN COMPLETA
             if (string.IsNullOrEmpty(keyString))
                 throw new Exception("Jwt:Key no configurado");
+
+            if (string.IsNullOrEmpty(issuer))
+                throw new Exception("Jwt:Issuer no configurado");
+
+            if (string.IsNullOrEmpty(audience))
+                throw new Exception("Jwt:Audience no configurado");
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Idusuario.ToString()),
-                new Claim(ClaimTypes.Name, usuario.Nombre),
-                new Claim(ClaimTypes.Email, usuario.Email)
+                new Claim(ClaimTypes.Name, usuario.Nombre ?? ""),
+                new Claim(ClaimTypes.Email, usuario.Email ?? "")
             };
 
-            foreach (var rol in roles)
+            if (roles != null)
             {
-                if (!string.IsNullOrEmpty(rol))
-                    claims.Add(new Claim(ClaimTypes.Role, rol));
+                foreach (var rol in roles)
+                {
+                    if (!string.IsNullOrEmpty(rol))
+                        claims.Add(new Claim(ClaimTypes.Role, rol));
+                }
             }
 
             var key = new SymmetricSecurityKey(

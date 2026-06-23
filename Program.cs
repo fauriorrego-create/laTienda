@@ -1,10 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using laTienda.Models;
+using laTienda.Services;
+using laTienda.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// =====================
 // SERVICES
+// =====================
+
 builder.Services.AddControllers();
+
+// 🔥 AutoMapper (OBLIGATORIO)
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// 🔥 JwtService (OBLIGATORIO)
+builder.Services.AddScoped<JwtService>();
+
+// =====================
+// DATABASE
+// =====================
 
 var connectionString = builder.Configuration.GetConnectionString("cadenaSQL");
 
@@ -16,17 +31,23 @@ builder.Services.AddDbContext<PruebaContext>(options =>
     );
 });
 
+// =====================
+// APP BUILD
+// =====================
+
 var app = builder.Build();
 
-// PIPELINE CORRECTO
+// =====================
+// PIPELINE
+// =====================
+
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Health check
+// Health check (opcional)
 app.MapGet("/", () => "API funcionando 🚀");
 
-// ❌ NO fijar puerto en Render
 app.Run();
