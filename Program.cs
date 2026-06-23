@@ -10,11 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // =====================
 
 builder.Services.AddControllers();
-
-// 🔥 AutoMapper (OBLIGATORIO)
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-// 🔥 JwtService (OBLIGATORIO)
 builder.Services.AddScoped<JwtService>();
 
 // =====================
@@ -27,7 +23,7 @@ builder.Services.AddDbContext<PruebaContext>(options =>
 {
     options.UseMySql(
         connectionString,
-        new MySqlServerVersion(new Version(8, 0, 36))
+        ServerVersion.AutoDetect(connectionString)
     );
 });
 
@@ -37,17 +33,10 @@ builder.Services.AddDbContext<PruebaContext>(options =>
 
 var app = builder.Build();
 
-// =====================
-// PIPELINE
-// =====================
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
-// Health check (opcional)
 app.MapGet("/", () => "API funcionando 🚀");
 
 app.Run();
